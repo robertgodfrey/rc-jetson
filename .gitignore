@@ -1,0 +1,8 @@
+# executable
+application
+
+# object files
+*.o
+
+# control page
+control
