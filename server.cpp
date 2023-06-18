@@ -6,8 +6,13 @@ int main()
     Hello hiThere;
     crow::SimpleApp app;
 
-    CROW_ROUTE(app, "/<string>")([](std::string name){
-        auto page = crow::mustache::load("index.html");
+    CROW_ROUTE(app, "/")([](){
+        auto page = crow::mustache::load_text("index.html");
+        return page;
+    });
+
+    CROW_ROUTE(app, "/welcome/<string>")([](std::string name) {
+        auto page = crow::mustache::load("name.html");
         crow::mustache::context ctx ({{"person", name}});
         return page.render(ctx);
     });

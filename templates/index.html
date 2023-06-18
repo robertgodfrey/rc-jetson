@@ -1,6 +1,36 @@
 <!doctype html>
 <html>
 <body>
-  <h1>Recipes</h1>
+  <h1>Landing page</h1>
+  <form onsubmit="enter(event)">
+    <input type="text" id="name" placeholder="Enter your name" />
+    <button type="submit" id="enterSite">Enter site</button>
+  </form>
+  <script>
+    const nameInput = document.getElementById('name');
+    const submitButton = document.getElementById('enterSite');
+    
+    nameInput.addEventListener('input', () => {
+      if (nameInput.value.length > 0) {
+        submitButton.disabled = false;
+      } else {
+        submitButton.disabled = true;
+      }
+    });
+
+    function enter(e) {
+      e.preventDefault();
+      location.href = `/welcome/${nameInput.value}`;
+    }
+    
+    window.onload = (() => {
+      if (nameInput.value.length > 0) {
+        submitButton.disabled = false;
+      } else {
+        submitButton.disabled = true;
+      }
+    });
+    
+  </script>
 </body>
 </html>
