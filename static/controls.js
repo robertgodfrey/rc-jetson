@@ -12,17 +12,25 @@ let leftPress = false;
 let backPress = false;
 let rightPress = false;
 
-let socket = io();
-socket.on('connect', () => {
-    console.log('SocketIO connection established');
-    socketConnected = true;
-    socket.emit('message', 'Confirmed connection');
+const socket = new WebSocket('ws://0.0.0.0:18080/ws');
 
-    socket.on('disconnect', () => {
-        console.log('SocketIO disconnected');
-        socketConnected = false;
-        socket.disconnect();
-    });
+socket.addEventListener('open', () => {
+    console.log('WS connection established');
+    socketConnected = true;
+    socket.send(JSON.stringify({
+        message: 'Confirmed connection'
+    }));
+})
+
+socket.addEventListener('message', ({ data }) => {
+    const packet = JSON.parse(data);
+    console.log(packet);
+});
+
+socket.addEventListener('close', () => {
+    console.log('WS disconnected');
+    socketConnected = false;
+    socket.close();
 });
 
 function keyDown(event) {
@@ -69,7 +77,9 @@ function keyDown(event) {
     // send data if changed
     if (dataState !== oldDataState) {
         console.log(dataState);
-        socket.emit('controls', dataState);
+        socket.send(JSON.stringify({
+            control: dataState.toString().padStart(2, '0'),
+        }));
         oldDataState = dataState;
     }
 }
@@ -118,7 +128,9 @@ function keyUp(event) {
     // send data if changed
     if (dataState !== oldDataState) {
         console.log(dataState);
-        socket.emit('controls', dataState);
+        socket.send(JSON.stringify({
+            control: dataState.toString().padStart(2, '0'),
+        }));
         oldDataState = dataState;
     }
 }
