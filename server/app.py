@@ -12,11 +12,6 @@ def index():
     return render_template('index.html')
 
 
-@app.get('/welcome/<name>')
-def welcome(name):
-    return render_template('welcome.html', name=name)
-
-
 @socketio.on('connect')
 def test_connect():
     print('SocketIO connection established')
@@ -29,9 +24,54 @@ def test_disconnect():
 
 @socketio.on('message')
 def handle_message(data):
-   print(f'recieved message: {data}')
+   print(f'Received message: {data}')
+
+
+@socketio.on('controls')
+def handle_controls(command):
+    """
+    0000
+    WSAD
+    W: forward           8
+    A: backward          4
+    S: left              2
+    D: right             1
+    """
+    status = ''
+    if command >= 8:
+        status += 'MOVING FORWARD'
+        if command == 10:
+            # left
+            status += ' LEFT'
+        elif command == 9:
+            # right
+            status += ' RIGHT'
+        else:
+            # just go forward
+            pass
+    elif command >= 4:
+        # backward
+        status += 'MOVING BACKWARD'
+        if command == 6:
+            # left
+            status += ' LEFT'
+        elif command == 5:
+            # right
+            status += ' RIGHT'
+        else:
+            # just reverse
+            pass
+    elif command == 2:
+        # left
+        status = 'TURNING LEFT'
+    elif command == 1:
+        # right
+        status = 'TURNING RIGHT'
+    else:
+        status = 'STOPPING'
+    print(status)
+    return status
 
 
 if __name__ == '__main__':
     socketio.run(app)
-
