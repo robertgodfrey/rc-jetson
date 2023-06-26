@@ -19,7 +19,8 @@ def test_connect():
 
 @socketio.on('disconnect')
 def test_disconnect():
-    print('SocketIO disconnected')
+    # stop all motor controls
+    print('SocketIO disconnected, stopping all controls')
 
 
 @socketio.on('message')

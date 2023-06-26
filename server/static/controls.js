@@ -3,6 +3,7 @@ const leftControl = document.getElementById('leftControl');
 const backControl = document.getElementById('backControl');
 const rightControl = document.getElementById('rightControl');
 
+let socketConnected = false;
 let dataState = 0;
 let oldDataState = 0;
 
@@ -14,15 +15,23 @@ let rightPress = false;
 let socket = io();
 socket.on('connect', () => {
     console.log('SocketIO connection established');
+    socketConnected = true;
     socket.emit('message', 'Confirmed connection');
 
     socket.on('disconnect', () => {
         console.log('SocketIO disconnected');
+        socketConnected = false;
         socket.disconnect();
     });
 });
 
 function keyDown(event) {
+    if (!socketConnected) {
+        console.log('Not connected');
+        document.removeEventListener('keydown', keyDown);
+        document.removeEventListener('keyup', keyUp);
+        return;
+    }
     switch (event.keyCode) {
         case 38:
         case 87:
@@ -66,6 +75,12 @@ function keyDown(event) {
 }
 
 function keyUp(event) {
+    if (!socketConnected) {
+        console.log('Not connected');
+        document.removeEventListener('keydown', keyDown);
+        document.removeEventListener('keyup', keyUp);
+        return;
+    }
     switch (event.keyCode) {
         case 38:
         case 87:
