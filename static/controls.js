@@ -12,7 +12,7 @@ let leftPress = false;
 let backPress = false;
 let rightPress = false;
 
-const socket = new WebSocket('ws://0.0.0.0:18080/ws');
+const socket = new WebSocket('ws://192.168.1.66:18080/ws');
 
 socket.addEventListener('open', () => {
     console.log('WS connection established');
